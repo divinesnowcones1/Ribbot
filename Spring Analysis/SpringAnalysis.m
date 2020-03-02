@@ -92,6 +92,7 @@ end
 %Average spring force
 Fyavg = mean(Fy,2);
 
+%Sorting out the best spring
 inc = 1;
 Fybest = 0;
 for i = 1:size(Fyavg,3)
