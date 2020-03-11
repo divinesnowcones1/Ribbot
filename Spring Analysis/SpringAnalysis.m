@@ -3,15 +3,14 @@ clear;
 clc;
 
 % Constants
-m = 0.4;          %0.5 lbs
+m = 0.7;          %0.5 lbs
 g = 9.81;           %m/s^2
 lbf2N = 175.1268;   %lbf/in to N/m
-%kgftoN = 9.80665;   %kgf/m to N/m
 in2m = 0.0254;      %in to m
 
 
 %Benchmark Requirements
-launchTraj = deg2rad(45);
+launchTraj = deg2rad(60);
 HorzDist = 1*0.3048;    %(ft * m)
 
 %Launch Velocity
@@ -68,8 +67,8 @@ k = 2*SpringMatrix(:,3);
 xi = SpringMatrix(:,1);
 xf = SpringMatrix(:,2);
 x = zeros(size(SpringMatrix,1),100);
-for m = 1:size(SpringMatrix,1)
-    x(m,:) = linspace(xi(m),xf(m),100);
+for c = 1:size(SpringMatrix,1)
+    x(c,:) = linspace(xi(c),xf(c),100);
 end
 
 %Variable declarations
@@ -106,11 +105,13 @@ MinLinkLength = 0.08;
 inc = 1;
 tempAngle = 0;
 tempFyavg = 0;
+minInitialForce = m*g*1;
+maxInitialForce = m*g*1.1;
 for i = 1:size(Fyavg,3)
     for j = 1:size(linkLength,2)
         tempAngle = AngleMin(j,1,i);
         tempFyavg = Fyavg(j,1,i);
-        if Fyavg(j,1,i) > mean(Freq) && min(Fy(j,length(x),i)) < 5 && linkLength(1,j) > MinLinkLength %&& AngleMin(j,1,i) < 10  %Selection Criteria
+        if Fyavg(j,1,i) > mean(Freq) && min(Fy(j,length(x),i)) < maxInitialForce && min(Fy(j,length(x),i)) > minInitialForce && linkLength(1,j) > MinLinkLength && AngleMin(j,1,i) < 10%Selection Criteria
             link(inc) = j;
             spring(inc) = i;
             inc = inc  +  1;
@@ -118,22 +119,29 @@ for i = 1:size(Fyavg,3)
     end
 end
 
-num = 1;
-disp(['Spring Number: #',num2str(spring(num)),'']);
-SpringMatrix(spring(num),:);
-disp(['Link Length: ',num2str(linkLength(link(num))),' m']);
-figure(2);
-plot(x(spring(num),:),Fy(link(num),:,spring(num)))
-hold on
-line([xi(spring(num)), xf(spring(num))],[mean(Freq), mean(Freq)],'Color','red','LineStyle','--');
-line([xi(spring(num)), xf(spring(num))],[Fyavg(link(num),1,spring(num)), Fyavg(link(num),1,spring(num))],'Color','green','LineStyle','--');
-hold off
-xlabel('x (m)');
-ylabel('Fy (N)');
-title('Vertical Force to X Position');
+%% Display Springs
+close;
+clc;
+% for i = 1:length(spring)
 
-figure(3);
-plot(rad2deg(angle(link(num),:,spring(num))),Fy(link(num),:,spring(num)));
-xlabel('Theta');
-ylabel('Fy (N)');
-title('Vertical Force to Theta');
+    num = 2;
+    disp(['Spring Number: #',num2str(spring(num)),'']);
+    SpringMatrix(spring(num),:);
+    disp(['Link Length: ',num2str(linkLength(link(num))),' m']);
+    figure(num);
+    plot(x(spring(num),:)-xi(spring(num)),Fy(link(num),:,spring(num)))
+    hold on
+    line([xi(spring(num))-xi(spring(num)), xf(spring(num))-xi(spring(num))],[mean(Freq), mean(Freq)],'Color','red','LineStyle','--');
+    line([xi(spring(num))-xi(spring(num)), xf(spring(num))-xi(spring(num))],[Fyavg(link(num),1,spring(num)), Fyavg(link(num),1,spring(num))],'Color','green','LineStyle','--');
+    hold off
+    xlabel('Displacement (m)');
+    ylabel('Fy (N)');
+    title('Vertical Force to X Position');
+
+    figure(num+1);
+    plot(rad2deg(angle(link(num),:,spring(num))),Fy(link(num),:,spring(num)));
+    xlabel('Theta');
+    ylabel('Fy (N)');
+    title('Vertical Force to Theta');
+
+% end
