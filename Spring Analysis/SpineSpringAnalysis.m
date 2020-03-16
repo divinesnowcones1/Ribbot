@@ -8,11 +8,7 @@ clc;
 m = 0.7;          % mass kg %0.7 and 1
 g = 9.81;         % gravity m/s^2
 
-% Body
-% Assuming the body is 0.75 kg of overall robot mass
-rearMass = 0.375;   % kg 
-frontMass = 0.375;  % kg
-
+% Unit conversions
 lbf2N = 175.1268;   % lbf/in to N/m
 in2m = 0.0254;      % in to m
 
@@ -36,7 +32,7 @@ legThrustAngles = atan2(F_dy,F_dx);   % Leg thrust angles
 %Range of link lengths
 linkLength = linspace(0.03,0.20,270*2); % meters
 
-%% List of available springs from McMaster
+%% List of available extension springs from McMaster
 %[1] rest length | [2] extended length | [3] spring constant
 SpringMatrix = ...
     [3*in2m, 5.94*in2m, 2.2*lbf2N;...  %9044K193    #1
@@ -69,6 +65,9 @@ SpringMatrix = ...
     8*in2m, 12.9*in2m, 3.07*lbf2N];...  %9654K444   #28
 %    5*in2m, 7.2*in2m, 30*lb2N];
 
+
+%% List of available compression springs from McMaster
+%[1] rest length | [2] extended length | [3] spring constant
 %% Spring Calculations
 % Spring constant
 k = SpringMatrix(:,3);
@@ -108,6 +107,9 @@ end
 % Import spring/link parameters to optimize
 Fy_avg = mean(F_y,2);
 
+% Peak force
+Fy_max = max(F_y, 2);
+ 
 % TorquePeak = max(torque,[],2);
 AngleMin = rad2deg(min(angle,[],2));
 MinLinkLength = 0.08;
@@ -157,118 +159,3 @@ end
 
 % end
 
-%% Body
-% bodyLaunchTraj = deg2rad(67.5);   % Desired launch trajectory
-% 
-% % Launch Velocity (also known as initial velocity)
-% RearBodyAngularFreq = sqrt(k/rearMass);
-% FrontBodyAngularFreq = sqrt(k/frontMass);
-% 
-% % Launch force requirements
-% rearBody_accel = -RearBodyAngularFreq.^2 * x;                         % input acceleration
-% FrontBody_accel = -FrontBodyAngularFreq.^2 * x;                         % input acceleration
-% 
-% % Rear
-% F_in_rear = rearBody_accel*rearMass;                            % Input force
-% F_dy_rear = F_in_rear*sin(RearBodyAngularFreq) + rearMass*g;      % Desired Fy
-% F_dx_rear = F_in_rear*cos(RearBodyAngularFreq);                   % Desired Fx
-% F_req_rear = sqrt(F_dy_rear.^2 + F_dx_rear.^2);                 % Required forces
-% 
-% % Front
-% F_in_front = FrontBody_accel*frontMass;                            % Input force
-% F_dy_front = F_in_front*sin(FrontBodyAngularFreq) + frontMass*g;      % Desired Fy
-% F_dx_front = F_in_front*cos(FrontBodyAngularFreq);                    % Desired Fx
-% F_req_front = sqrt(F_dy_front.^2 + F_dx_front.^2);             % Required forces
-
-%% Old Body Spring Calculation %% 
-% % Parameters
-% % masses
-% rearMass = 1; %0.375
-% frontMass = 2;
-% 
-% % spring constants
-% k1 = 0;
-% k2 = 1;
-% 
-% % Compute components of EOM matrices
-% % Mass matrix (kg)- assuming body mass = 0.75 kg
-% massMatrix =[rearMass, 0;     
-%              0,        frontMass];   
-% 
-% % Spring constant matrix
-% kMatrix =[k1+k2, -k2;
-%          -k2,    k2];
-%               
-% % Damping matrix
-% cMatrix = [0 0;
-%            0 0];
-% 
-% % excitation force
-% f = [0; 0];
-% 
-% % Compute the EOM 
-% % Mx" + Cx' + Kx = fsinwt
-% for i = 1:50
-%     w(i) = 2*pi*f(i);          % w = frequency = omega
-%     w2(i) = w(i)*w(i);         % squaring omega
-%     a11 = -w2(i)*m+k;          % representing the left hand…
-%     a12 = w(i)*c;                % matrix of the single matrix…
-%     a21 = -w(i)*c;               % equation
-%     a22 = -w2(i)*m+k;
-%     a = [a11 a12;
-%        a21 a22];
-%     b = inv(a);
-%     c1 = [0;0;fi];
-%     d(1,i) = b(1,:)*c1;
-%     d(2,i) = b(2,:)*c1;
-%     d(3,i) = b(3,:)*c1;
-%     d(4,i) = b(4,:)*c1;
-%     x(1,i) = sqrt(abs(d(1,i))^2+abs(d(3,i))^2);
-%     x(2,i) = sqrt(abs(d(2,i))^2+abs(d(4,i))^2);
-%     p(1,i) = atan(d(1,i)/d(3,i))*180/pi;
-%     if p(1,i)<0 % to check whether the angle is
-%         negative or not.
-%         p(1,i)=180+p(1,i);
-%     else
-%         p(1,i)=p(1,i);
-%     end
-%     
-%     p(2,i)=atan(d(2,i)/d(4,i))*180/pi;
-%     
-%     if p(2,i)<0
-%         if d(4,i)<0
-%             p(2,i) = -180 + p(2,i)
-%         else
-%             p(2,i)=180+p(2,i);
-%         end
-%     else
-%         p(2,i)=p(2,i);
-%     end
-% end
-% 
-% figure(3);
-% plot(f,x(1,:));grid
-% xlabel('Frequency');
-% ylabel('Amplitude of Rear Mass');
-% 
-% figure(4);
-% plot(f,x(2,:));grid
-% xlabel('Frequency');
-% ylabel('Amplitude of Front Mass');
-% 
-% figure(5);
-% plot(f,p(1,:));grid
-% xlabel('Frequency');
-% ylabel('Phase of Rear Mass');
-% 
-% figure(6);
-% plot(f,p(2,:));grid
-% xlabel('Frequency');
-% ylabel('Phase of Front Mass') ;
-% 
-% 
-% 
-% 
-% 
-% 
-% 
