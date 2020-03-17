@@ -4,33 +4,26 @@ clear;
 clc;
 
 %% Parameters
-% Constants
-m = 0.7;          % mass kg %0.7 and 1
-g = 9.81;         % gravity m/s^2
-
 % Unit conversions
 lbf2N = 175.1268;   % lbf/in to N/m
 in2m = 0.0254;      % in to m
 
-%% Benchmark Requirements
-%% Leg
+% Robot Parameters
+m = 0.7;                    % mass kg %0.7 and 1
+g = 9.81;                   % gravity m/s^2
 launchTraj = deg2rad(45);   % Desired launch trajectory
 HorzDist = 1*0.3048;        % Desired horizontal jump range (ft * m)
+launchVel = sqrt((HorzDist*g)/sin(2*launchTraj));   % Launch Velocity (also known as initial velocity)
+t = linspace(0.05,0.3,100);             % Jump phase time step
+accel = launchVel./t;                   % input acceleration
+linkLength = linspace(0.03,0.20,270*2); % %Range of link lengths
 
-% Launch Velocity (also known as initial velocity)
-launchVel = sqrt((HorzDist*g)/sin(2*launchTraj));
-
-% Jump force requirements
-t = linspace(0.05,0.3,100);           % Jump phase time step
-accel = launchVel./t;                 % input acceleration
+%% Benchmark Requiremets
 F_in = accel*m;                       % Input force
 F_dy = F_in*sin(launchTraj) + m*g;    % Desired Fy
 F_dx = F_in*cos(launchTraj);          % Desired Fx
 F_req = sqrt(F_dy.^2 + F_dx.^2);      % Required forces
-legThrustAngles = atan2(F_dy,F_dx);   % Leg thrust angles  
-
-%Range of link lengths
-linkLength = linspace(0.03,0.20,270*2); % meters
+% legThrustAngles = atan2(F_dy,F_dx);   % Leg thrust angles  
 
 %% List of available extension springs from McMaster
 %[1] rest length | [2] extended length | [3] spring constant
@@ -125,7 +118,10 @@ for i = 1:size(Fy_avg,3)
     for j = 1:size(linkLength,2)
         tempAngle = AngleMin(j,1,i);
         tempFyavg = Fy_avg(j,1,i);
-        if Fy_avg(j,1,i) > mean(F_req) && min(F_y(j,length(x),i)) < maxInitialForce && min(F_y(j,length(x),i)) > minInitialForce && linkLength(1,j) > MinLinkLength && AngleMin(j,1,i) < 10%Selection Criteria
+        if Fy_avg(j,1,i) > mean(F_req) && min(F_y(j,length(x),i)) <...
+                maxInitialForce && min(F_y(j,length(x),i)) >...
+                minInitialForce && linkLength(1,j) > ...
+                MinLinkLength && AngleMin(j,1,i) < 10%Selection Criteria
             link(inc) = j;
             spring(inc) = i;
             inc = inc  +  1;
