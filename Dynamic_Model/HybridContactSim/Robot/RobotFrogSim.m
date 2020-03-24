@@ -81,8 +81,8 @@ gs2c2 = [cos(q0) -sin(q0) 0 gs2f2(1,4);sin(q0) cos(q0) 0 gs2f2(2,4);0 0 1 0;0 0 
 B12 = [eye(2);zeros(4,2)];
 
 %Fricton Cone requirement (U = fric_conditions*force >= 0)
-mu = inf;
-U = [0 0 1; 1 0 mu; -1 0 mu; 0 1 mu; 0 -1 mu];
+mu = 1;
+U = [0 1; 1 mu; -1 mu; 0 mu; 0 mu];
 
 %Hand Jacobian
 %Back Leg
@@ -113,7 +113,7 @@ JhFront = B12'*Adgc2s2*Jss2f2;
 Jh = [JhBack zeros(size(JhBack,1),size(JhFront,2)); zeros(size(JhFront,1),size(JhBack,2)) JhFront];
 
 %Grasp Map
-% gc1o = gc14;
+% gc1o = gc14;f
 %Simplified transform to use q0 x0 and y0 instead of gc14 and reliance on
 %q1 & q7
 gc1o = [cos(q0), -sin(q0), 0,x0
@@ -250,21 +250,21 @@ matlabFunction(Mbar,C,N,Y, 'File', 'computeDynamicMatricesFrog', 'Outputs', {'M'
 
 
 %% Trajectory Optimizaton
-
-% xi = zeros(16,1); %8 xi and 8 dxi
-%       q2      q3      q4      q5      q6   x0  y0   q0     dq
-xi = [pi/18; -pi/18; -5*pi/6; 5*pi/6; -pi/6; 1; 0.5; pi/6; zeros(8,1)];
-ui = [1; zeros(4,1)];
-
-takeoffphase = 0.4; %seconds 
-dt = 0.01;
-tspan = 0:dt:takeoffphase;
-N = length(tspan);
-vars = [xi;ui];
-
-% Code to produce initial dynamically feasible trajectory with ode45
-[t,x] = ode45(@Frogdynamics,tspan,xi', [], tspan);
-X0 = [x,ui'.*ones(N,length(ui))];
+% 
+% % xi = zeros(16,1); %8 xi and 8 dxi
+% %       q2      q3      q4      q5      q6   x0  y0   q0     dq
+% xi = [pi/18; -pi/18; -5*pi/6; 5*pi/6; -pi/6; 1; 0.5; pi/6; zeros(8,1)];
+% ui = [1; zeros(4,1)];
+% 
+% takeoffphase = 0.4; %seconds 
+% dt = 0.01;
+% tspan = 0:dt:takeoffphase;
+% N = length(tspan);
+% vars = [xi;ui];
+% 
+% % Code to produce initial dynamically feasible trajectory with ode45
+% [t,x] = ode45(@Frogdynamics,tspan,xi', [], tspan);
+% X0 = [x,ui'.*ones(N,length(ui))];
 
 %Got ode45 to run and produce some sort of x values, need to plot to see
 %what is actually happening then move on to optimization
@@ -275,7 +275,101 @@ X0 = [x,ui'.*ones(N,length(ui))];
 % [sol, cost] = fmincon(@minTorque, Xi, [],[],[],[],[],[],@nonlincon, options);
 %
 % xf = sol(:,1:4);
-animateFrog(x,dt);
+% animateFrog(x,dt);
+
+%% Initialization
+
+% Define start and stop times, set a dt to keep outputs at constant time
+% interval
+tstart = 0;
+tfinal = 0.5;
+dt = 0.01;
+
+% Initialize state and contact mode
+qi = [pi/18; -pi/18; -5*pi/6; 5*pi/6; -pi/6; 1; 0.5; pi/6]; 
+dqi = zeros(8,1);
+ui = zeros(5,1);
+disp(['Initial condition: [', num2str(qi'), ']''.'])
+xi = [qi;dqi;ui];
+contactMode = [];
+
+%Main Loop
+
+% Tell ode45 what event function to use and set max step size to make sure
+% we don't miss a zero crossing
+options = odeset('Events', @guardFunctions,'MaxStep',0.01);
+
+% Initialize output arrays
+tout = tstart;
+xout = xi.';
+teout = [];
+xeout = [];
+ieout = [];
+while tstart < tfinal
+    % Initialize simulation time vector
+    tspan = [tstart:dt:tfinal];
+    
+    % Simulate
+    [t,x,te,xe,ie] = ode45(@dynamics,tspan,xi,options,contactMode);
+    
+    % Sometimes the events function will record a nonterminal event if the
+    % initial condition is a zero. We want to ignore this, so we will only
+    % use the last row in the terminal state, time, and index.
+    if ~isempty(ie)
+        te = te(end,:);
+        xe = xe(end,:);
+        ie = ie(end,:);
+    end
+    
+    % Log output
+    nt = length(t);
+    tout = [tout; t(2:nt)];
+    xout = [xout; x(2:nt,:)];
+    teout = [teout; te];
+    xeout = [xeout; xe];
+    ieout = [ieout; ie];
+    
+    % Quit if simulation completes
+    if isempty(ie) 
+        disp('Final time reached');
+        break; % abort if simulation has completed
+    end
+    
+    % If flag was caused by a_i < 0 (i not in contact mode), compute the
+    % proper contact mode via IV complemetarity
+    if any(ie <= length(setdiff([1:3], contactMode)))
+        % Determine next contact mode
+        contactMode = FcompIV(xe');
+        
+        % Compute the reset map
+        [dq_p, p_hat] = computeResetMap(xe',contactMode);
+        xe = [xe(1:2),dq_p'];
+        
+        % Report contact mode transition
+        disp(['Transition to contact mode {', num2str(contactMode'), '} at time t = ', num2str(te), ' s.'])
+    end
+    
+    % Check to see if there should be liftoff (positive lambda), if so
+    % compute the proper contact mode via FA complementarity
+    [ddq,lambda] = solveEOM(xe',contactMode);
+    if (-lambda)<=0
+        contactMode = compFA(xe');
+        
+        % Report contact mode transition
+        disp(['Transition to contact mode {', num2str(contactMode'), '} at time t = ', num2str(te), ' s.'])
+    end
+    
+    % Update initial conditions for next iteration
+    x0 = xe';
+    tstart = t(end);
+    
+    % Stop if the particle comes to a rest
+    if all(abs(dq_p)<1e-6)
+        break;
+    end
+end
+
+animateFrog(xout, dt);
 
 %% Draw Robot
 close;

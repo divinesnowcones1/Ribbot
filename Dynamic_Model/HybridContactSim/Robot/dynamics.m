@@ -17,6 +17,6 @@ dx(1:8) = dq;
 dx(9:16) = ddq;
 
 % %Previous torque inputs??
-% dx(17:21) = u;
+dx(17:21) = u;
 
 end

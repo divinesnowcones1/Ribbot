@@ -6,7 +6,7 @@ u = x(17:21);
 
 % Compute A at the current state, only select rows for the current
 % contact mode
-A = computeFrogA(q)';
+A = computeFrogA(q')';
 % A = A(contactMode,:);
 
 if contactMode == 1
@@ -14,7 +14,7 @@ if contactMode == 1
 elseif contactMode == 2
     A = A(3:4,:);
 elseif isempty(contactMode)
-    A = 0;
+    A = [];
 else
     A = A;
 end
@@ -24,7 +24,7 @@ end
 c = size(A,1);
 
 % Compute block matrix inverse
-[M,C,N,Y] = computeDynamicMatricesFrog(q,dq,u);
+[M,C,N,Y] = computeDynamicMatricesFrog(q',dq',u');
 blockMatrixInv = computeBlockMatrixInverse(x,contactMode);
 
 % Compute the mass matrix

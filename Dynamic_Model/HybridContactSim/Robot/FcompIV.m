@@ -4,7 +4,7 @@ q = x(1:8);
 dq = x(9:16);
 
 % Define constraint functions
-a = computeFroga(q);
+a = computeFroga(q');
 
 % Identify possible contact modes where constraint function is 0
 possibleModes = find(abs(a)<1e-6);
