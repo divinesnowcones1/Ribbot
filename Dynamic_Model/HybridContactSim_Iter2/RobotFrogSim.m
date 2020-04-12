@@ -246,7 +246,7 @@ Mbar = subs(Mbar,[I1,I2,I3,I4,I5,I6,l1,l2,l3,l6,l4m1,l4m2,l5m1,l5m2,m1,m2,m3,m4,
 C = subs(C,[I1,I2,I3,I4,I5,I6,l1,l2,l3,l6,l4m1,l4m2,l5m1,l5m2,m1,m2,m3,m4,m5,m6],[I,L,m]);
 N = subs(N,[I1,I2,I3,I4,I5,I6,l1,l2,l3,l6,l4m1,l4m2,l5m1,l5m2,m1,m2,m3,m4,m5,m6],[I,L,m]);
 
-matlabFunction(a,'File', 'computeFroga', 'Vars', {q});
+matlabFunction(a,'File', 'computeFrog_a', 'Vars', {q});
 matlabFunction(A,'File', 'computeFrogA', 'Vars', {q});
 matlabFunction(dA,'File', 'computeFrogdA', 'Vars', {q,dq});
 

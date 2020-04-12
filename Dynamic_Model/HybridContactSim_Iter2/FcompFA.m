@@ -7,7 +7,7 @@ dq = x(9:16);
 J = {[],[1],[2]};   %[]- no contact  [1] - hind leg contact  [2] - front leg contact
 
 % Define constraint functions
-a = computeFroga(q');
+a = computeFrog_a(q');
 
 % Identify possible contact modes where constraint function is 0
 possibleModes = [ []; find(abs(a)<1e-6)];

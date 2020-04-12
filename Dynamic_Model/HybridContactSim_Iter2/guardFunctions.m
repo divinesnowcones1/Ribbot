@@ -4,7 +4,7 @@ q = x(1:8);
 dq = x(9:16);
 
 % Compute constraint function (transition if goes negative)
-a = computeFroga(q');
+a = computeFrog_a(q');
 a = a(setdiff([1:length(a)], contactMode));
 
 % Solve the equations of motion to compute lambda (transition if goes
