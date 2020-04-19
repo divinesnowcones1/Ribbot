@@ -1,5 +1,4 @@
 %% Robot Parameters
-
 mass = 0.8;
 g = 9.81;
 
@@ -29,7 +28,7 @@ height_plane = 0.025;
 plane_z = height_plane; 
 plane_x = 3;
 plane_y = 50;
-init_height = footHeight + bLegLength*2 + fBodyHeight/2 + plane_z;
+init_height = footHeight + bLegLength + fBodyHeight/2 + plane_z;
 
 world_damping = 0;      % Translational damping for 6-DOF joint [N/m]
 world_rot_damping = 0;  % Rotational damping for 6-DOF joint [N*m/(rad/s)]
