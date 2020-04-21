@@ -8,3 +8,19 @@ https://www.mathworks.com/videos/modeling-and-simulation-of-walking-robots-15765
 
 Contact Modeling with Simulink - more detail on how it work if needed
 https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction-to-contact-modeling-part-1-1502715532761.html
+
+## Tasks
+1) Obtain accurate dimensions and weights of robot components
+
+2) Model the leg as spring torque vs time
+
+3) Manual iteration of spine starting angle, torque, and start time
+	Torque/Start Time: input vector
+	Spine Starting Angle: Spine subsystem, Spine Joint, State Targets, Specify Position Target, Value
+
+4) Optimization
+	1) Dynamic equations of robot
+	2) Collocation of dynamic equations
+	3) Objective functions and implementation with fmincon and simulation
+
+5) Reference tracker for spine control
