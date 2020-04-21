@@ -1,4 +1,5 @@
 
+# Tutorials
 Simulink Walking Robot Example Download
 https://www.mathworks.com/matlabcentral/fileexchange/64227-matlab-and-simulink-robotics-arena-walking-robot
 
@@ -9,7 +10,7 @@ https://www.mathworks.com/videos/modeling-and-simulation-of-walking-robots-15765
 Contact Modeling with Simulink - more detail on how it work if needed
 https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction-to-contact-modeling-part-1-1502715532761.html
 
-## Tasks
+# Tasks
 1) Obtain accurate dimensions and weights of robot components
 
 2) Model the leg as spring torque vs time
@@ -24,3 +25,12 @@ https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction
 	3) Objective functions and implementation with fmincon and simulation
 
 5) Reference tracker for spine control
+
+# Possible Plots
+starting time vs distance
+sweep speed vs distance (2 free parameters)
+angle vs distance
+
+angle vs distance with fixed starting time and variable speed
+sweep speed vs distance with either fixed starting or ending time and variable angle
+angle vs distance with optimized parameters (sweep speed, starting time)
