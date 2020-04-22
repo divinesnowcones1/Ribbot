@@ -12,7 +12,7 @@ footLength = 8;     % cm
 footWidth = 3;      % cm
 footHeight = 0.5;   % cm
 
-%Back Leg Parameters (cm)
+%Back Leg Parameters cm)
 rUpperLegLength = 0.63;
 rUpperLegWidth = 1.91;
 rUpperLegHeight = 11.45;
