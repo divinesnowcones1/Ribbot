@@ -1,39 +1,58 @@
+close all;
+clc;
+
 %% Robot Parameters
-mass = 0.8;
+mass = 1; % kg 0.50592
 g = 9.81;
 
+%% Leg parameters
+% Need to change
 %Foot Parameters
-footLength = 8;     %cm
-footWidth = 3;      %cm
-footHeight = 0.5;   %cm
+footLength = 8;     % cm
+footWidth = 3;      % cm
+footHeight = 0.5;   % cm
 
-%Leg Parameters
-bLegRadius = 0.5;   %cm
-bLegLength = 15;    %cm
-fLegRadius = 0.5;    %cm
-fLegLength = 15;    %cm
+%Back Leg Parameters (cm)
+rUpperLegLength = 0.63;
+rUpperLegWidth = 1.91;
+rUpperLegHeight = 11.45;
+rUpperLegDim = [rUpperLegLength, rUpperLegWidth, rUpperLegHeight];
+rLowerLegLength = 0.63;
+rLowerLegWidth = 1.91;
+rLowerLegHeight = 11.45;
+rLowerLegDim = [rLowerLegLength, rLowerLegWidth, rLowerLegHeight];
 
+%Front Leg Parameters (cm)
+fLegLength = 0.32;
+fLegWidth = 1.27;
+fLegHeight = 7.06*2;
+fLegDim = [fLegLength, fLegWidth, fLegHeight];
+
+% fLegRadius = 0.5;
+% fLegLength = 15;
+
+%% Body Parameters
 %Rear Body Parameters
-rBodyLength = 9;    %cm
-rBodyWidth = 9;     %cm
-rBodyHeight = 9;    %cm
+rBodyLength = 12.70;    % cm
+rBodyWidth = 9;         % cm
+rBodyHeight = 9;        % cm
 
 %Front Body Parameters
-fBodyLength = 9;    %cm
-fBodyWidth = 9;     %cm
-fBodyHeight = 9;    %cm
+fBodyLength = 12.70;    % cm
+fBodyWidth = 9;         % cm
+fBodyHeight = 9;        % cm
 
-%World Parameters
+%% World Parameters
 height_plane = 0.025;
 plane_z = height_plane; 
 plane_x = 3;
 plane_y = 50;
-init_height = footHeight + bLegLength + fBodyHeight/2 + plane_z;
+init_height = footHeight + rLowerLegHeight + fBodyHeight/2 + plane_z;
 
 world_damping = 0;      % Translational damping for 6-DOF joint [N/m]
 world_rot_damping = 0;  % Rotational damping for 6-DOF joint [N*m/(rad/s)]
 
-%Motion Parameters
+%% Motion Parameters
 motion_time_constant = 0.001;
 
 % Contact and friction parameters
