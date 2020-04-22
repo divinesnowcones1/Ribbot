@@ -11,7 +11,7 @@ Contact Modeling with Simulink - more detail on how it work if needed
 https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction-to-contact-modeling-part-1-1502715532761.html
 
 # Tasks
-1) Obtain accurate dimensions and weights of robot components
+<del> 1) Obtain accurate dimensions and weights of robot components <del>
 
 2) Model the leg as spring torque vs time
 
