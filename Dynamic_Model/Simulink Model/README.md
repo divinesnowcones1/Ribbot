@@ -13,7 +13,7 @@ https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction
 # Tasks
 <del> 1) Obtain accurate dimensions and weights of robot components <del>
 
-2) Model the leg as spring torque vs time
+<del>2) Model the leg as spring torque vs time<del>
 
 3) Manual iteration of spine starting angle, torque, and start time
 	Torque/Start Time: input vector
