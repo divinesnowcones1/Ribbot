@@ -34,3 +34,19 @@ angle vs distance
 angle vs distance with fixed starting time and variable speed
 sweep speed vs distance with either fixed starting or ending time and variable angle
 angle vs distance with optimized parameters (sweep speed, starting time)
+
+# New Variable Names
+%% Parameters
+totalTime = 2;
+timeStep = 0.01;
+totalTimeSteps = totalTime/timeStep;
+takeOffPeriod = 0.2;    %sec
+waitTimeSteps = totalTime*(1-takeOffPeriod/totalTime)/timeStep;
+takeOffTimeSteps = totalTimeSteps - waitTimeSteps;
+
+%% Reference Commands
+% Time, Hip Angle, Foot Angle
+LegPosition = [linspace(0,totalTime,totalTimeSteps)', [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)'], [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)']];
+SpinePosition = [linspace(0,totalTime,totalTimeSteps)', zeros(totalTimeSteps,1)];
+ShoulderPosition = [linspace(0,totalTime,totalTimeSteps)', ones(totalTimeSteps,1)*20];
+
