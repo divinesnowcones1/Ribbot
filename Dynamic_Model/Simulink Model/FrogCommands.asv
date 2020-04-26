@@ -1,0 +1,42 @@
+% %% Parameters
+% totalTime = 1; 
+% timeStep = 0.01; 
+% totalTimeSteps = totalTime/timeStep; 
+% takeOffPeriod = 0.2; %sec 
+% waitTimeSteps = totalTime*(1-takeOffPeriod/totalTime)/timeStep; 
+% takeOffTimeSteps = totalTimeSteps - waitTimeSteps;
+% 
+% %% Reference Commands 
+% % Time, Hip Angle, Foot Angle 
+% LegPosition = [linspace(0,totalTime,totalTimeSteps)',...
+%     [150*ones(waitTimeSteps,1); linspace(150,40,takeOffTimeSteps)'],...
+%     [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)'],...
+%     [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)']];
+% SpinePosition = [linspace(0,totalTime,totalTimeSteps)', zeros(totalTimeSteps,1)]; 
+% ShoulderPosition = [linspace(0,totalTime,totalTimeSteps)', ones(totalTimeSteps,1)*20];
+
+
+%% Reference Commands
+totalTime = 2;
+timeStep = 0.01;
+totalTimeSteps = totalTime/timeStep;
+
+landPeriod = 0.2;
+takeOffPeriod = 0.2;    %sec
+
+waitTimeSteps = totalTime*(1-(landPeriod + takeOffPeriod)/totalTime)/timeStep;
+takeOffTimeSteps = 0.5*(totalTimeSteps - waitTimeSteps);
+landOffTimeSteps = 0.5*(totalTimeSteps - waitTimeSteps);
+
+size(linspace(0,totalTime,totalTimeSteps)')
+size(150*ones(waitTimeSteps,1))
+size(linspace(150,40,takeOffTimeSteps)')
+size (linspace(150,40,landOffTimeSteps)')
+
+%Leg Position command vectors: Time, Knee Angle, Hip Angle, Foot Angle
+LegPosition = [linspace(0,totalTime,totalTimeSteps)',...
+    [150*ones(waitTimeSteps,1); linspace(150,40,takeOffTimeSteps)'; linspace(40,150,landOffTimeSteps)'],...
+    [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)'; linspace(-20,-75,landOffTimeSteps)'],...
+    [-75*ones(waitTimeSteps,1); linspace(-75,-20,takeOffTimeSteps)'; linspace(-20,-75,landOffTimeSteps)']];
+SpinePosition = [linspace(0,totalTime,totalTimeSteps)', zeros(totalTimeSteps,1)];
+ShoulderPosition = [linspace(0,totalTime,totalTimeSteps)', ones(totalTimeSteps,1)*20];
