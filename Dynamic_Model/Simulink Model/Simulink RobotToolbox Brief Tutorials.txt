@@ -1,9 +1,0 @@
-Simulink Walking Robot Example Download
-https://www.mathworks.com/matlabcentral/fileexchange/64227-matlab-and-simulink-robotics-arena-walking-robot
-
-Walk through of Walking Robot Example	
-https://www.youtube.com/watch?v=4rfxWYpE7MM
-https://www.mathworks.com/videos/modeling-and-simulation-of-walking-robots-1576560207573.html
-
-Contact Modeling with Simulink - more detail on how it work if needed
-https://www.mathworks.com/videos/matlab-and-simulink-robotics-arena-introduction-to-contact-modeling-part-1-1502715532761.html
