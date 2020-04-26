@@ -49,7 +49,7 @@ world_damping = 0;      % Translational damping for 6-DOF joint [N/m]
 world_rot_damping = 0;  % Rotational damping for 6-DOF joint [N*m/(rad/s)]
 
 %% Motion Parameters
-mass = footMass + rUpperLegMass + rLowerLegMass + fLegMass + rBodyMass + fBodyMass; % kg 0.50592
+mass = footMass + rUpperLegMass + rLowerLegMass + fLegMass + rBodyMass + fBodyMass; % kg 0.5719
 g = 9.81;
 
 motion_time_constant = 0.001;
